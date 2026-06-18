@@ -2,35 +2,35 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { products } from "@/lib/products";
-import heroImage from "@/assets/hero.jpg";
+import heroImage from "@/assets/hero-portrait.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lilouette — Delicate Handcrafted Jewelry" },
-      { name: "description", content: "Lilouette is a small jewelry studio creating delicate, romantic, everyday pieces. Discover necklaces, rings, earrings and bracelets handmade with love." },
-      { property: "og:title", content: "Lilouette — Delicate Handcrafted Jewelry" },
-      { property: "og:description", content: "Delicate, romantic jewelry made to be worn every day." },
+      { title: "Lilouette — Handcrafted Statement Earrings" },
+      { name: "description", content: "Lilouette is a small jewelry studio shaping sculptural gold and pearl earrings, handmade in small batches." },
+      { property: "og:title", content: "Lilouette — Handcrafted Statement Earrings" },
+      { property: "og:description", content: "Sculptural, romantic earrings made to be worn every day." },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-  const featured = products.slice(0, 3);
+  const featured = products;
   return (
     <SiteLayout>
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-7">
-            <p className="text-xs tracking-[0.3em] uppercase text-accent">Handcrafted in small batches</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-accent">Earrings · Handmade in small batches</p>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-foreground">
-              Quiet pieces,<br/>
+              Sculpted gold,<br/>
               <em className="italic text-accent">worn with love.</em>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-md leading-relaxed">
-              Lilouette is a tiny jewelry studio shaping delicate gold and pearl pieces — made to be layered, treasured, and lived in.
+              Lilouette is a tiny studio shaping statement earrings — golden, pearl and enamel pieces made to be treasured.
             </p>
             <div className="flex items-center gap-4 pt-2">
               <Link
@@ -47,11 +47,11 @@ function Index() {
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2rem] bg-[var(--blush)]/40 blur-2xl" aria-hidden />
             <img
-              src={heroImage}
-              alt="Delicate gold jewelry arranged on soft blush silk"
-              width={1600}
-              height={1280}
-              className="relative rounded-[1.5rem] shadow-[var(--shadow-soft)] object-cover aspect-[5/4] w-full"
+              src={heroImage.url}
+              alt="Lilouette gold square earring worn in a black and white portrait"
+              width={1200}
+              height={1500}
+              className="relative rounded-[1.5rem] shadow-[var(--shadow-soft)] object-cover aspect-[4/5] w-full"
             />
           </div>
         </div>
@@ -68,7 +68,7 @@ function Index() {
             View all
           </Link>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
           {featured.map((p) => (
             <article key={p.id} className="group">
               <div className="overflow-hidden rounded-2xl bg-secondary aspect-square">
