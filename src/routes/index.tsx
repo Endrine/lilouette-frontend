@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import { products } from "@/lib/products";
+import { products, type Product } from "@/lib/products";
+import { useCart } from "@/lib/cart";
+import { toast } from "sonner";
 import heroImage from "@/assets/hero-portrait.png.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -37,7 +39,7 @@ function Index() {
                 to="/products"
                 className="inline-flex items-center justify-center rounded-full bg-foreground px-7 py-3 text-sm tracking-wide text-background transition-all hover:bg-accent hover:shadow-[var(--shadow-soft)]"
               >
-                Shop the collection
+                Shop now
               </Link>
               <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
                 Say hello
@@ -70,22 +72,7 @@ function Index() {
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
           {featured.map((p) => (
-            <article key={p.id} className="group">
-              <div className="overflow-hidden rounded-2xl bg-secondary aspect-square">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  loading="lazy"
-                  width={800}
-                  height={800}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="pt-4 flex items-baseline justify-between">
-                <h3 className="font-display text-xl">{p.name}</h3>
-                <span className="text-sm text-muted-foreground">${p.price}</span>
-              </div>
-            </article>
+            <FeaturedCard key={p.id} product={p} />
           ))}
         </div>
       </section>
@@ -103,5 +90,37 @@ function Index() {
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+function FeaturedCard({ product }: { product: Product }) {
+  const { addItem, openCart } = useCart();
+  return (
+    <article className="group">
+      <div className="overflow-hidden rounded-2xl bg-secondary aspect-square">
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          width={800}
+          height={800}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      </div>
+      <div className="pt-4 flex items-baseline justify-between">
+        <h3 className="font-display text-xl">{product.name}</h3>
+        <span className="text-sm text-muted-foreground">${product.price}</span>
+      </div>
+      <button
+        onClick={() => {
+          addItem(product);
+          toast.success(`${product.name} added to your bag`);
+          openCart();
+        }}
+        className="mt-3 text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+      >
+        Add to bag
+      </button>
+    </article>
   );
 }
