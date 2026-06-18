@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { products } from "@/lib/products";
+import { useCart } from "@/lib/cart";
+import { toast } from "sonner";
+import type { Product } from "@/lib/products";
 
 export const Route = createFileRoute("/products")({
   head: () => ({
@@ -28,26 +31,44 @@ function ProductsPage() {
       <section className="mx-auto max-w-6xl px-6 pb-24">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
           {products.map((p) => (
-            <article key={p.id} className="group flex flex-col">
-              <div className="overflow-hidden rounded-2xl bg-secondary aspect-square mb-5">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  loading="lazy"
-                  width={800}
-                  height={800}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex items-baseline justify-between mb-2">
-                <h2 className="font-display text-2xl">{p.name}</h2>
-                <span className="text-sm tracking-wide text-foreground">${p.price}</span>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
-            </article>
+            <ProductCard key={p.id} product={p} />
           ))}
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+function ProductCard({ product }: { product: Product }) {
+  const { addItem, openCart } = useCart();
+  const handleAdd = () => {
+    addItem(product);
+    toast.success(`${product.name} added to your bag`);
+    openCart();
+  };
+  return (
+    <article className="group flex flex-col">
+      <div className="overflow-hidden rounded-2xl bg-secondary aspect-square mb-5">
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          width={800}
+          height={800}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      </div>
+      <div className="flex items-baseline justify-between mb-2">
+        <h2 className="font-display text-2xl">{product.name}</h2>
+        <span className="text-sm tracking-wide text-foreground">${product.price}</span>
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{product.description}</p>
+      <button
+        onClick={handleAdd}
+        className="mt-auto inline-flex items-center justify-center rounded-full border border-foreground/80 px-5 py-2.5 text-xs tracking-[0.2em] uppercase text-foreground transition-all hover:bg-foreground hover:text-background"
+      >
+        Add to bag
+      </button>
+    </article>
   );
 }

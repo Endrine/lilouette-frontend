@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram } from "lucide-react";
+import { Instagram, ShoppingBag } from "lucide-react";
 import type { ReactNode } from "react";
+import { useCart } from "@/lib/cart";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,13 +14,14 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 }
 
 function Header() {
+  const { count, openCart } = useCart();
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md bg-background/70 border-b border-border/50">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Link to="/" className="font-display text-2xl tracking-wide text-foreground">
           lilouette
         </Link>
-        <nav className="flex items-center gap-8 text-sm">
+        <nav className="flex items-center gap-6 md:gap-8 text-sm">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/products">Products</NavLink>
           <NavLink to="/contact">Contact</NavLink>
@@ -32,6 +34,18 @@ function Header() {
           >
             <Instagram className="h-4 w-4" />
           </a>
+          <button
+            onClick={openCart}
+            aria-label={`Open cart, ${count} items`}
+            className="relative text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {count > 0 && (
+              <span className="absolute -top-2 -right-2 min-w-[1.1rem] h-[1.1rem] px-1 inline-flex items-center justify-center rounded-full bg-accent text-[10px] font-medium text-background">
+                {count}
+              </span>
+            )}
+          </button>
         </nav>
       </div>
     </header>
