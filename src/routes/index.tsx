@@ -1,29 +1,107 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { SiteLayout } from "@/components/SiteLayout";
+import { products } from "@/lib/products";
+import heroImage from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Lilouette — Delicate Handcrafted Jewelry" },
+      { name: "description", content: "Lilouette is a small jewelry studio creating delicate, romantic, everyday pieces. Discover necklaces, rings, earrings and bracelets handmade with love." },
+      { property: "og:title", content: "Lilouette — Delicate Handcrafted Jewelry" },
+      { property: "og:description", content: "Delicate, romantic jewelry made to be worn every day." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const featured = products.slice(0, 3);
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <SiteLayout>
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-7">
+            <p className="text-xs tracking-[0.3em] uppercase text-accent">Handcrafted in small batches</p>
+            <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-foreground">
+              Quiet pieces,<br/>
+              <em className="italic text-accent">worn with love.</em>
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground max-w-md leading-relaxed">
+              Lilouette is a tiny jewelry studio shaping delicate gold and pearl pieces — made to be layered, treasured, and lived in.
+            </p>
+            <div className="flex items-center gap-4 pt-2">
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center rounded-full bg-foreground px-7 py-3 text-sm tracking-wide text-background transition-all hover:bg-accent hover:shadow-[var(--shadow-soft)]"
+              >
+                Shop the collection
+              </Link>
+              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
+                Say hello
+              </Link>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2rem] bg-[var(--blush)]/40 blur-2xl" aria-hidden />
+            <img
+              src={heroImage}
+              alt="Delicate gold jewelry arranged on soft blush silk"
+              width={1600}
+              height={1280}
+              className="relative rounded-[1.5rem] shadow-[var(--shadow-soft)] object-cover aspect-[5/4] w-full"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Featured */}
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase text-accent mb-3">Newly added</p>
+            <h2 className="font-display text-4xl md:text-5xl">A few favorites</h2>
+          </div>
+          <Link to="/products" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
+            View all
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {featured.map((p) => (
+            <article key={p.id} className="group">
+              <div className="overflow-hidden rounded-2xl bg-secondary aspect-square">
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  loading="lazy"
+                  width={800}
+                  height={800}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="pt-4 flex items-baseline justify-between">
+                <h3 className="font-display text-xl">{p.name}</h3>
+                <span className="text-sm text-muted-foreground">${p.price}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* About strip */}
+      <section className="bg-secondary/40 mt-10">
+        <div className="mx-auto max-w-3xl px-6 py-20 text-center space-y-5">
+          <p className="text-xs tracking-[0.3em] uppercase text-accent">Our story</p>
+          <h2 className="font-display text-3xl md:text-4xl leading-snug">
+            Each piece begins on a quiet morning, shaped by hand in our small studio.
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">
+            We make jewelry the way we love to wear it — soft, simple, and yours to keep close.
+          </p>
+        </div>
+      </section>
+    </SiteLayout>
   );
 }
