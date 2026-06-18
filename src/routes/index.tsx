@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const featured = products.slice(0, 3);
+  const featured = products;
   return (
     <SiteLayout>
       {/* Hero */}
