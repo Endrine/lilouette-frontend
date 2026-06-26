@@ -64,9 +64,9 @@
 :root {
   --radius: 0.5rem;
   /* Soft & Romantic palette: cream, blush, warm tan, deep cocoa */
-  --background: oklch(0.985 0.012 75);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.28 0.04 40);
-  --card: oklch(0.99 0.008 75);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.28 0.04 40);
   --popover: oklch(0.99 0.008 75);
   --popover-foreground: oklch(0.28 0.04 40);
