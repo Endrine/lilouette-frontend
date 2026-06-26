@@ -9,9 +9,9 @@ export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
       { title: "Products — Lilouette" },
-      { name: "description", content: "Browse Lilouette's collection of delicate handcrafted necklaces, earrings, rings and bracelets." },
+      { name: "description", content: "Browse Lilouette's collection of delicate statement earrings." },
       { property: "og:title", content: "Products — Lilouette" },
-      { property: "og:description", content: "Delicate, romantic, handmade jewelry pieces." },
+      { property: "og:description", content: "Delicate, romantic jewelry pieces." },
     ],
   }),
   component: ProductsPage,
@@ -24,7 +24,7 @@ function ProductsPage() {
         <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4">The collection</p>
         <h1 className="font-display text-5xl md:text-6xl">Made to be loved</h1>
         <p className="mt-5 text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          Every piece is handmade in small batches. Quietly beautiful, made to be layered and worn every single day.
+          Curated in small batches. Quietly beautiful, made to be layered and worn every single day.
         </p>
       </section>
 
