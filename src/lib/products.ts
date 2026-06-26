@@ -22,7 +22,7 @@ export const products: Product[] = [
   {
     id: "baroque-pearl",
     name: "Baroque Pearl Studs",
-    description: "Lustrous baroque pearls cradled in hand-shaped gold — no two alike.",
+    description: "Lustrous baroque pearls cradled in sculpted gold — no two alike.",
     price: 88,
     image: earringPearl.url,
   },
