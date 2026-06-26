@@ -9,9 +9,9 @@ import heroImage from "@/assets/hero-portrait.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lilouette — Handcrafted Statement Earrings" },
-      { name: "description", content: "Lilouette is a small jewelry studio shaping sculptural gold and pearl earrings, handmade in small batches." },
-      { property: "og:title", content: "Lilouette — Handcrafted Statement Earrings" },
+      { title: "Lilouette — Statement Earrings" },
+      { name: "description", content: "Lilouette is a small jewelry studio offering sculptural gold and pearl earrings, curated in small batches." },
+      { property: "og:title", content: "Lilouette — Statement Earrings" },
       { property: "og:description", content: "Sculptural, romantic earrings made to be worn every day." },
     ],
   }),
@@ -26,13 +26,13 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-7">
-            <p className="text-xs tracking-[0.3em] uppercase text-accent">Earrings · Handmade in small batches</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-accent">Earrings · Curated in small batches</p>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-foreground">
               Sculpted gold,<br/>
               <em className="italic text-accent">worn with love.</em>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-md leading-relaxed">
-              Lilouette is a tiny studio shaping statement earrings — golden, pearl and enamel pieces made to be treasured.
+              Lilouette is a tiny studio offering statement earrings — golden, pearl and enamel pieces made to be treasured.
             </p>
             <div className="flex items-center gap-4 pt-2">
               <Link
@@ -82,10 +82,10 @@ function Index() {
         <div className="mx-auto max-w-3xl px-6 py-20 text-center space-y-5">
           <p className="text-xs tracking-[0.3em] uppercase text-accent">Our story</p>
           <h2 className="font-display text-3xl md:text-4xl leading-snug">
-            Each piece begins on a quiet morning, shaped by hand in our small studio.
+            Thoughtfully curated pieces, chosen the way we love to wear them.
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            We make jewelry the way we love to wear it — soft, simple, and yours to keep close.
+            Soft, simple, and yours to keep close — jewelry made to layer with every day.
           </p>
         </div>
       </section>
