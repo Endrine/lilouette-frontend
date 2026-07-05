@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Instagram } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { API } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -16,22 +18,48 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { t } = useT();
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
-    (e.currentTarget as HTMLFormElement).reset();
+    setError(null);
+    setLoading(true);
+    const form = e.currentTarget;
+    const body = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+    };
+    try {
+      const res = await fetch(`${API}/api/contact/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail ?? "Something went wrong. Please try again.");
+      }
+      setSent(true);
+      form.reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <SiteLayout>
       <section className="mx-auto max-w-5xl px-6 pt-16 pb-24 grid md:grid-cols-2 gap-14 items-start">
         <div className="space-y-6">
-          <p className="text-xs tracking-[0.3em] uppercase text-accent">Say hello</p>
-          <h1 className="font-display text-5xl md:text-6xl leading-[1.05]">Let's talk soon.</h1>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent">{t.contact.eyebrow}</p>
+          <h1 className="font-display text-5xl md:text-6xl leading-[1.05]">{t.contact.title}</h1>
           <p className="text-muted-foreground leading-relaxed max-w-md">
-            Questions about a piece, a custom order, or just want to say hi? Send us a note — we read every one.
+            {t.contact.subtitle}
           </p>
           <a
             href="https://www.instagram.com/lilouette.co/"
@@ -40,28 +68,32 @@ function ContactPage() {
             className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-5 py-3 text-sm transition-all hover:border-accent hover:text-accent"
           >
             <Instagram className="h-4 w-4" />
-            DM us @lilouette.co
+            {t.contact.dmUs}
           </a>
         </div>
 
         <form onSubmit={onSubmit} className="rounded-2xl bg-card border border-border/60 p-8 shadow-[var(--shadow-soft)] space-y-5">
-          <Field label="Your name">
-            <input required name="name" type="text" className="field-input" placeholder="Lilou Bonnet" />
+          <Field label={t.contact.name}>
+            <input required name="name" type="text" className="field-input" placeholder={t.contact.namePlaceholder} />
           </Field>
-          <Field label="Email">
+          <Field label={t.contact.email}>
             <input required name="email" type="email" className="field-input" placeholder="you@example.com" />
           </Field>
-          <Field label="Message">
-            <textarea required name="message" rows={5} className="field-input resize-none" placeholder="Tell us a little..." />
+          <Field label={t.contact.message}>
+            <textarea required name="message" rows={5} className="field-input resize-none" placeholder={t.contact.messagePlaceholder} />
           </Field>
           <button
             type="submit"
-            className="w-full rounded-full bg-foreground text-background py-3 text-sm tracking-wide transition-all hover:bg-accent hover:shadow-[var(--shadow-soft)]"
+            disabled={loading}
+            className="w-full rounded-full bg-foreground text-background py-3 text-sm tracking-wide transition-all hover:bg-accent hover:shadow-[var(--shadow-soft)] disabled:opacity-60"
           >
-            Send message
+            {loading ? t.contact.submitting : t.contact.submit}
           </button>
           {sent && (
-            <p className="text-sm text-accent text-center pt-1">Thank you — your note is on its way ✿</p>
+            <p className="text-sm text-accent text-center pt-1">{t.contact.sent}</p>
+          )}
+          {error && (
+            <p className="text-sm text-destructive text-center pt-1">{error}</p>
           )}
         </form>
       </section>

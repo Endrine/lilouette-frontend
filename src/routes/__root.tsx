@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -12,8 +12,10 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Toaster } from "@/components/ui/sonner";
+import { fetchProducts, type Product } from "@/lib/api";
+import { AuthProvider } from "@/lib/auth";
+import { LanguageProvider } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -80,14 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Lilouette — Statement Earrings" },
+      { name: "description", content: "Lilouette is a small jewelry studio offering sculptural gold and pearl earrings, curated in small batches." },
+      { property: "og:title", content: "Lilouette — Statement Earrings" },
+      { property: "og:description", content: "Sculptural, romantic earrings made to be worn every day." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@lilouette.co" },
     ],
     links: [
       {
@@ -127,12 +128,26 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <CartDrawer />
-        <Toaster position="top-center" />
-      </CartProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppWithProducts />
+        </AuthProvider>
+      </LanguageProvider>
     </QueryClientProvider>
+  );
+}
+
+function AppWithProducts() {
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: () => fetchProducts(),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return (
+    <CartProvider products={products}>
+      <Outlet />
+      <Toaster position="top-center" />
+    </CartProvider>
   );
 }

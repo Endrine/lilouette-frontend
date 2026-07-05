@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
-import { products, type Product } from "@/lib/products";
 import { useCart } from "@/lib/cart";
+import { useT } from "@/lib/i18n";
 import { toast } from "sonner";
-import heroImage from "@/assets/hero-portrait.png.asset.json";
+import heroImage from "@/images/hero.png";
+import { fetchProducts, type Product, API } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,37 +20,43 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const featured = products;
+  const { t } = useT();
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: () => fetchProducts(),
+    staleTime: 1000 * 60 * 5,
+  });
+
   return (
     <SiteLayout>
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-7">
-            <p className="text-xs tracking-[0.3em] uppercase text-accent">Earrings · Curated in small batches</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-accent">{t.home.eyebrow}</p>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-foreground">
-              Sculpted gold,<br/>
-              <em className="italic text-accent">worn with love.</em>
+              {t.home.heroLine1}<br/>
+              <em className="italic text-accent">{t.home.heroLine3}</em>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-md leading-relaxed">
-              Lilouette is a tiny studio offering statement earrings — golden, pearl and enamel pieces made to be treasured.
+              {t.home.heroParagraph}
             </p>
             <div className="flex items-center gap-4 pt-2">
               <Link
                 to="/products"
                 className="inline-flex items-center justify-center rounded-full bg-foreground px-7 py-3 text-sm tracking-wide text-background transition-all hover:bg-accent hover:shadow-[var(--shadow-soft)]"
               >
-                Shop now
+                {t.home.shopCollection}
               </Link>
               <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
-                Say hello
+                {t.home.getInTouch}
               </Link>
             </div>
           </div>
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2rem] bg-[var(--blush)]/40 blur-2xl" aria-hidden />
             <img
-              src={heroImage.url}
+              src={heroImage}
               alt="Lilouette gold square earring worn in a black and white portrait"
               width={1200}
               height={1500}
@@ -59,67 +66,95 @@ function Index() {
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-accent mb-3">Newly added</p>
-            <h2 className="font-display text-4xl md:text-5xl">A few favorites</h2>
+      {/* Featured carousel */}
+      <section className="py-16 overflow-hidden">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-accent mb-3">{t.home.newlyAdded}</p>
+              <h2 className="font-display text-4xl md:text-5xl">{t.home.favorites}</h2>
+            </div>
+            <Link to="/products" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
+              {t.home.shopCollection}
+            </Link>
           </div>
-          <Link to="/products" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground underline underline-offset-4">
-            View all
-          </Link>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {featured.map((p) => (
-            <FeaturedCard key={p.id} product={p} />
-          ))}
-        </div>
+
+        {products.length > 0 && (
+          <div className="relative">
+            {/* fade edges */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-background to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-background to-transparent" />
+
+            <div className="flex carousel-track" style={{ width: "max-content" }}>
+              {[...products.slice(0, 6), ...products.slice(0, 6)].map((p, i) => (
+                <div key={`${p.id}-${i}`} className="w-56 flex-shrink-0 px-4">
+                  <FeaturedCard product={p} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* About strip */}
       <section className="bg-secondary/40 mt-10">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center space-y-5">
-          <p className="text-xs tracking-[0.3em] uppercase text-accent">Our story</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent">{t.home.ourStory}</p>
           <h2 className="font-display text-3xl md:text-4xl leading-snug">
-            Thoughtfully curated pieces, chosen the way we love to wear them.
+            {t.home.favoritesSubtitle}
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Soft, simple, and yours to keep close — jewelry made to layer with every day.
-          </p>
+
         </div>
       </section>
+
+      <style>{`
+        .carousel-track {
+          animation: carousel-scroll 28s linear infinite;
+        }
+        .carousel-track:hover {
+          animation-play-state: paused;
+        }
+        @keyframes carousel-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+      `}</style>
     </SiteLayout>
   );
 }
 
 function FeaturedCard({ product }: { product: Product }) {
-  const { addItem, openCart } = useCart();
+  const { addItem } = useCart();
+  const { t } = useT();
   return (
     <article className="group">
-      <div className="overflow-hidden rounded-2xl bg-secondary aspect-square">
+      <Link to="/products/$slug" params={{ slug: product.slug }} className="block overflow-hidden rounded-2xl bg-secondary aspect-square">
         <img
-          src={product.image}
+          src={`${API}${product.image_url}`}
           alt={product.name}
           loading="lazy"
           width={800}
           height={800}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-      </div>
+      </Link>
       <div className="pt-4 flex items-baseline justify-between">
-        <h3 className="font-display text-xl">{product.name}</h3>
-        <span className="text-sm text-muted-foreground">${product.price}</span>
+        <Link to="/products/$slug" params={{ slug: product.slug }} className="font-display text-xl hover:text-accent transition-colors">{product.name}</Link>
+        <span className="text-sm text-muted-foreground">€{product.price}</span>
       </div>
+      {(product.is_sold_out || product.stock <= 0) && (
+        <p className="mt-2 text-xs tracking-[0.2em] uppercase text-muted-foreground/50">{t.home.soldOut}</p>
+      )}
       <button
         onClick={() => {
           addItem(product);
-          toast.success(`${product.name} added to your bag`);
-          openCart();
+          toast.success(`${product.name} ${t.product.addedToBag}`);
         }}
-        className="mt-3 text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+        disabled={product.is_sold_out || product.stock <= 0}
+        className="mt-2 text-xs tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
       >
-        Add to bag
+        {t.home.quickAdd}
       </button>
     </article>
   );
